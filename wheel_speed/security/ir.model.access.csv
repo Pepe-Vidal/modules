@@ -13,3 +13,4 @@ access_wheel_speed_chassis_type,wheel_speed.chassis_type,model_wheel_speed_chass
 access_wheel_speed_suspension,wheel_speed.suspension,model_wheel_speed_suspension,base.group_user,1,1,1,1
 access_wheel_speed_suspension_type,wheel_speed.suspension_type,model_wheel_speed_suspension_type,base.group_user,1,1,1,1
 access_wheel_speed_race,wheel_speed.race,model_wheel_speed_race,base.group_user,1,1,1,1
+access_wheel_speed_tramos,wheel_speed.tramos,model_wheel_speed_tramos,base.group_user,1,1,1,1

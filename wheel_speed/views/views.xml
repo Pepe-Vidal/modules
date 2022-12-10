@@ -66,6 +66,11 @@
     </record>
 
 
+    <record model="ir.actions.act_window" id="wheel_speed.action_tramos_window">
+      <field name="name">WheelSpeed Tramos Carreras</field>
+      <field name="res_model">wheel_speed.tramos</field>
+      <field name="view_mode">tree,form</field>
+    </record>
 
     <record model="ir.actions.act_window" id="wheel_speed.action_type_car_window">
       <field name="name">WheelSpeed Coches</field>
@@ -157,6 +162,9 @@
               action="wheel_speed.action_suspension_window"/>
 
 
+
+    <menuitem name="Tramos Carreras" id="wheel_speed.menu_tramos_list" parent="wheel_speed.menu_auxiliar"
+              action="wheel_speed.action_tramos_window"/>
 
     <menuitem name="Tipo Cars" id="wheel_speed.menu_type_car_list" parent="wheel_speed.menu_auxiliar"
               action="wheel_speed.action_type_car_window"/>

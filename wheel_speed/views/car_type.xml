@@ -38,6 +38,7 @@
                             <field name="cv"/>
                             <field name="aceleracion"/>
                             <field name="coef_aer"/>
+                            <field name="agarre"/>
                             <field name="freno"/>
                             <field name="weight"/>
                             <field name="weight_total"/>

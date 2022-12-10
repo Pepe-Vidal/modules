@@ -27,6 +27,7 @@
         'security/ir.model.access.csv',
         'views/car_type.xml',
         'views/car.xml',
+        'views/race.xml',
         'views/engine_type.xml',
         'views/engine.xml',
         'views/chassis_type.xml',

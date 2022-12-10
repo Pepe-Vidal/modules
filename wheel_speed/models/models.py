@@ -43,7 +43,17 @@ class player(models.Model):
         for p in self:
             p.available_cars = self.env['wheel_speed.car_type'].search([])
     
-
+class tramos(models.Model):
+    _name = 'wheel_speed.tramos'
+    _description = 'tramos de las carreras'
+    
+    name = fields.Char()
+    distancia = fields.Float()
+    grados = fields.Float()
+    
+    
+    
+    
 class race(models.Model):
     _name = 'wheel_speed.race'
     _description = 'Race'
@@ -56,6 +66,13 @@ class race(models.Model):
     player2 = fields.Many2one('wheel_speed.player')
     car1 = fields.Many2one('wheel_speed.car')
     car2 = fields.Many2one('wheel_speed.car')
+    
+    tramos = fields.Many2many('wheel_speed.tramos')
+
+    distancia = fields.Float()
+    time1 = fields.Float()
+    time2 = fields.Float()
+    winner = fields.Char()
     
     
     @api.onchange('player1')
@@ -76,11 +93,93 @@ class race(models.Model):
             }
         }
         
+  
     @api.depends('date_start')
     def _get_time(self):
         for r in self:
             r.date_end = fields.Datetime.to_string(
-                    fields.Datetime.from_string(r.date_start) + timedelta(minutes=60))            
+                    fields.Datetime.from_string(r.date_start) + timedelta(minutes=60))
+            
+    def simulate_race(self):         
+      for c in self:
+        player1 = c.player1
+        player2 = c.player2
+        car1 = c.car1
+        car2 = c.car2
+        
+        vel_ini_car1 = 0
+        vel_ini_car2 = 0
+        
+        time_car1 = 0
+        time_car2 = 0
+        
+        tramos_carera = c.tramos
+        
+        for t in tramos_carera:
+            
+            if t.grados == 0:
+
+                if (vel_ini_car1 == 0 ):
+                    time_vel_max_car1 = ((car1.max_vel * car1.aceleracion)/100) * (car1.max_vel/100)
+                else:
+                    time_vel_max_car1 = ((car1.max_vel * car1.aceleracion)/100) * (car1.max_vel/100) - ((vel_ini_car1 * car1.aceleracion)/100) * (car1.max_vel/100)
+
+                distancia_vel_max_car1 = ((car1.max_vel/2) * (5/18)) * time_vel_max_car1
+
+                if (distancia_vel_max_car1 < c.distancia ):
+                    time_car1 += ((t.distancia - distancia_vel_max_car1)/(car1.max_vel * (5/18)) ) + time_vel_max_car1
+                else:
+                    time_car1 += (t.distancia * time_vel_max_car1) / distancia_vel_max_car1
+                
+                
+                if (vel_ini_car2 == 0 ):
+                    time_vel_max_car2 = ((car2.max_vel * car2.aceleracion)/100) * (car2.max_vel/100)
+                else:
+                    time_vel_max_car2 = ((car2.max_vel * car2.aceleracion)/100) * (car2.max_vel/100)- ((vel_ini_car2 * car2.aceleracion)/100) * (car2.max_vel/100)
+                  
+                distancia_vel_max_car2 = ((car2.max_vel/2) * (5/18)) * time_vel_max_car2
+                
+                if (distancia_vel_max_car2 < c.distancia ):
+                    time_car2 += ((t.distancia - distancia_vel_max_car2)/(car2.max_vel * (5/18))) + time_vel_max_car2
+                else:
+                    time_car2 += (t.distancia * time_vel_max_car2) / distancia_vel_max_car2
+                 
+            else:
+
+                #CALCULAR TIEMPO COCHE 1 CURVA
+                velocidad_max_curva = t.distancia / ((t.grados * 100 / 360) /10)
+
+                velocidad_curva_car1 = velocidad_max_curva + car1.agarre - (car1.coef_aer*150)
+
+                if velocidad_curva_car1 > car1.max_vel:
+                    velocidad_curva_car1 = car1.max_vel * (car1.freno /100)
+                else:
+                    velocidad_curva_car1 = velocidad_curva_car1 * (car1.freno /100)
+
+                
+                vel_ini_car1 = velocidad_curva_car1
+                time_car1 += (t.distancia/(velocidad_curva_car1 * (5/18)))
+                
+                #CALCULAR TIEMPO COCHE 1 CURVA
+                velocidad_curva_car2 = velocidad_max_curva + car2.agarre -(car2.coef_aer*150)
+
+                if velocidad_curva_car2 > car2.max_vel:
+                    velocidad_curva_car2 = car2.max_vel * (car2.freno /100)
+                else:
+                    velocidad_curva_car2 = velocidad_curva_car2 * (car2.freno /100)
+
+                vel_ini_car2 = velocidad_curva_car2
+                time_car2 += (t.distancia/(velocidad_curva_car2 * (5/18)))
+             
+        c.time1 = time_car1
+        c.time2 = time_car2
+        if (time_car2 > time_car1 ):
+            c.winner = "car1"
+        else:
+            c.winner = "car2"
+                          
+                
+                
     
 
 class car(models.Model):
@@ -105,6 +204,7 @@ class car(models.Model):
     weight_total = fields.Float(compute="_set_weight")
     coef_aer = fields.Float(related='type.coef_aer')
     aceleracion = fields.Float(related='type.aceleracion')
+    agarre = fields.Float(compute="_set_agarre")
     freno = fields.Float(compute="_set_freno")
     
     price_car = fields.Float(related='type.price_car')
@@ -135,6 +235,11 @@ class car(models.Model):
       for rl in self:
           rl.cv = rl.motor.cv
           
+    @api.depends('ruedas')
+    def _set_agarre(self):          
+      for rl in self:
+          rl.agarre = rl.ruedas.agarre
+          
     @api.depends('frenos')
     def _set_freno(self):          
       for rl in self:
@@ -161,8 +266,8 @@ class car_type(models.Model):
     weight_total = fields.Float(compute="_set_weight")
     coef_aer = fields.Float()
     aceleracion = fields.Float()
+    agarre = fields.Float(compute="_set_agarre")
     freno = fields.Float(compute="_set_freno")
-    
     price_car = fields.Float()
     
     
@@ -181,6 +286,11 @@ class car_type(models.Model):
     def _set_cv(self):          
       for rl in self:
           rl.cv = rl.motor.cv
+          
+    @api.depends('ruedas')
+    def _set_agarre(self):          
+      for rl in self:
+          rl.agarre = rl.ruedas.agarre
           
     @api.depends('frenos')
     def _set_freno(self):          
@@ -227,7 +337,7 @@ class engine_type(models.Model):
     name = fields.Char(required=True)
     foto = fields.Image(max_width = 200 ,max_height = 200 )
     peso = fields.Float()
-    durabilidad = fields.Float()
+    durabilidad = fields.Float(default = 100,readonly=True)
     cc = fields.Float()
     cv = fields.Float()
     velocidad = fields.Float()
@@ -253,10 +363,16 @@ class wheel_type(models.Model):
     name = fields.Char(required=True)
     foto = fields.Image(max_width = 200 ,max_height = 200 )
     peso = fields.Float()
-    durabilidad = fields.Float()
+    durabilidad = fields.Float(default = 100,readonly=True)
     diametro = fields.Float()
     agarre = fields.Float()
     velocidad = fields.Float()
+    
+    @api.constrains('agarre')
+    def comprobar_agarre(self):
+        for w in self:
+            if w.agarre > 200 or w.agarre < 0:
+                raise ValidationError("El agarre tiene que ser entr 0 y 200.")
 
 
 class brake(models.Model):
@@ -277,8 +393,14 @@ class brake_type(models.Model):
     name = fields.Char(required=True)
     foto = fields.Image(max_width = 200 ,max_height = 200 )
     peso = fields.Float()
-    durabilidad = fields.Float()
+    durabilidad = fields.Float(default = 100,readonly=True)
     fuerza = fields.Float()
+    
+    @api.constrains('fuerza')
+    def comprobar_agarre(self):
+        for b in self:
+            if b.fuerza > 200 or b.fuerza < 0:
+                raise ValidationError("La furza tiene que ser entr 0 y 100.")
     
 class chassis(models.Model):
     _name = 'wheel_speed.chassis'
@@ -297,7 +419,7 @@ class chassis_type(models.Model):
     name = fields.Char(required=True)
     foto = fields.Image(max_width = 200 ,max_height = 200 )
     peso = fields.Float()
-    durabilidad = fields.Float()
+    durabilidad = fields.Float(default = 100,readonly=True)
     
 class suspension(models.Model):
     _name = 'wheel_speed.suspension'
@@ -317,7 +439,7 @@ class suspension_type(models.Model):
     name = fields.Char(required=True)
     foto = fields.Image(max_width = 200 ,max_height = 200 )
     peso = fields.Float()
-    durabilidad = fields.Float()
+    durabilidad = fields.Float(default = 100,readonly=True)
     velocidad = fields.Float()
 
 
