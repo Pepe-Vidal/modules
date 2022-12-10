@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_wheel_speed_player,wheel_speed.player,model_wheel_speed_player,base.group_user,1,1,1,1
+access_wheel_speed_car,wheel_speed.car,model_wheel_speed_car,base.group_user,1,1,1,1
+access_wheel_speed_car_type,wheel_speed.car_type,model_wheel_speed_car_type,base.group_user,1,1,1,1
+access_wheel_speed_engine,wheel_speed.engine,model_wheel_speed_engine,base.group_user,1,1,1,1
+access_wheel_speed_engine_type,wheel_speed.engine_type,model_wheel_speed_engine_type,base.group_user,1,1,1,1
+access_wheel_speed_wheel,wheel_speed.wheel,model_wheel_speed_wheel,base.group_user,1,1,1,1
+access_wheel_speed_wheel_type,wheel_speed.wheel_type,model_wheel_speed_wheel_type,base.group_user,1,1,1,1
+access_wheel_speed_brake,wheel_speed.brake,model_wheel_speed_brake,base.group_user,1,1,1,1
+access_wheel_speed_brake_type,wheel_speed.brake_type,model_wheel_speed_brake_type,base.group_user,1,1,1,1
+access_wheel_speed_chassis,wheel_speed.chassis,model_wheel_speed_chassis,base.group_user,1,1,1,1
+access_wheel_speed_chassis_type,wheel_speed.chassis_type,model_wheel_speed_chassis_type,base.group_user,1,1,1,1
+access_wheel_speed_suspension,wheel_speed.suspension,model_wheel_speed_suspension,base.group_user,1,1,1,1
+access_wheel_speed_suspension_type,wheel_speed.suspension_type,model_wheel_speed_suspension_type,base.group_user,1,1,1,1
+access_wheel_speed_race,wheel_speed.race,model_wheel_speed_race,base.group_user,1,1,1,1

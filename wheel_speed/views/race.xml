@@ -1,0 +1,22 @@
+<odoo>
+  <data>
+
+  <record model="ir.ui.view" id="wheel_speed.race_calendar">
+      <field name="name">Races Calendar</field>
+      <field name="model">wheel_speed.race</field>
+      <field name="arch" type="xml">
+        <calendar string="Races Calendar"
+                  date_start="date_start"
+                  date_stop="date_end"
+                  color = "player1"
+        >
+          <field name="name"/>
+          <field name="player1"/>
+          <field name="player2"/>
+        </calendar>
+      </field>
+    </record>
+
+
+  </data>
+</odoo>

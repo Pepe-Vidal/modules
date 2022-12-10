@@ -1,0 +1,181 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="wheel_speed.list">
+      <field name="name">WheelSpeed list</field>
+      <field name="model">wheel_speed.wheel_speed</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_player_window">
+      <field name="name">WheelSpeed Player</field>
+      <field name="res_model">wheel_speed.player</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_car_window">
+      <field name="name">WheelSpeed Coches</field>
+      <field name="res_model">wheel_speed.car</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_race_window">
+      <field name="name">WheelSpeed Race</field>
+      <field name="res_model">wheel_speed.race</field>
+      <field name="view_mode">tree,form,calendar</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_engine_window">
+      <field name="name">WheelSpeed Motores</field>
+      <field name="res_model">wheel_speed.engine</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_wheel_window">
+      <field name="name">WheelSpeed Ruedas</field>
+      <field name="res_model">wheel_speed.wheel</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_brake_window">
+      <field name="name">WheelSpeed Frenos</field>
+      <field name="res_model">wheel_speed.brake</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_chassis_window">
+      <field name="name">WheelSpeed Chasis</field>
+      <field name="res_model">wheel_speed.chassis</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_suspension_window">
+      <field name="name">WheelSpeed Suspension</field>
+      <field name="res_model">wheel_speed.suspension</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_type_car_window">
+      <field name="name">WheelSpeed Coches</field>
+      <field name="res_model">wheel_speed.car_type</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_type_engine_window">
+      <field name="name">WheelSpeed Motores</field>
+      <field name="res_model">wheel_speed.engine_type</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_type_wheel_window">
+      <field name="name">WheelSpeed Ruedas</field>
+      <field name="res_model">wheel_speed.wheel_type</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_type_brake_window">
+      <field name="name">WheelSpeed Frenos</field>
+      <field name="res_model">wheel_speed.brake_type</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_type_chassis_window">
+      <field name="name">WheelSpeed Chasis</field>
+      <field name="res_model">wheel_speed.chassis_type</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="wheel_speed.action_type_suspension_window">
+      <field name="name">WheelSpeed Suspension</field>
+      <field name="res_model">wheel_speed.suspension_type</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="wheel_speed.action_server">
+      <field name="name">WheelSpeed server</field>
+      <field name="model_id" ref="model_wheel_speed_wheel_speed"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+
+    <menuitem name="WheelSpeed" id="wheel_speed.menu_root"/>
+
+    <!-- menu categories -->
+
+    <menuitem name="Game" id="wheel_speed.menu_game" parent="wheel_speed.menu_root"/>
+    <menuitem name="Piezas" id="wheel_speed.menu_pieces" parent="wheel_speed.menu_root"/>
+    <menuitem name="Auxiliar" id="wheel_speed.menu_auxiliar" parent="wheel_speed.menu_root"/>
+   
+
+    <!-- actions -->
+
+    <menuitem name="Players" id="wheel_speed.menu_player_list" parent="wheel_speed.menu_game"
+              action="wheel_speed.action_player_window"/>
+
+    <menuitem name="Cars" id="wheel_speed.menu_car_list" parent="wheel_speed.menu_game"
+              action="wheel_speed.action_car_window"/>
+
+    <menuitem name="Race" id="wheel_speed.menu_race_list" parent="wheel_speed.menu_game"
+              action="wheel_speed.action_race_window"/>
+
+    <menuitem name="Motores" id="wheel_speed.menu_engine_list" parent="wheel_speed.menu_pieces"
+              action="wheel_speed.action_engine_window"/>
+
+    <menuitem name="Ruedas" id="wheel_speed.menu_wheel_list" parent="wheel_speed.menu_pieces"
+              action="wheel_speed.action_wheel_window"/>
+
+    <menuitem name="Frenos" id="wheel_speed.menu_brake_list" parent="wheel_speed.menu_pieces"
+              action="wheel_speed.action_brake_window"/>     
+
+    <menuitem name="Chasis" id="wheel_speed.menu_chassis_list" parent="wheel_speed.menu_pieces"
+              action="wheel_speed.action_chassis_window"/> 
+
+    <menuitem name="Suspensiones" id="wheel_speed.menu_suspension_list" parent="wheel_speed.menu_pieces"
+              action="wheel_speed.action_suspension_window"/>
+
+
+
+    <menuitem name="Tipo Cars" id="wheel_speed.menu_type_car_list" parent="wheel_speed.menu_auxiliar"
+              action="wheel_speed.action_type_car_window"/>
+
+    <menuitem name="Tipo Motores" id="wheel_speed.menu_type_engine_list" parent="wheel_speed.menu_auxiliar"
+              action="wheel_speed.action_type_engine_window"/>
+
+    <menuitem name="Tipo Ruedas" id="wheel_speed.menu_type_wheel_list" parent="wheel_speed.menu_auxiliar"
+              action="wheel_speed.action_type_wheel_window"/>
+
+    <menuitem name="Tipo Frenos" id="wheel_speed.menu_type_brake_list" parent="wheel_speed.menu_auxiliar"
+              action="wheel_speed.action_type_brake_window"/>     
+
+    <menuitem name="Tipo Chasis" id="wheel_speed.menu_type_chassis_list" parent="wheel_speed.menu_auxiliar"
+              action="wheel_speed.action_type_chassis_window"/> 
+
+    <menuitem name="Tipo Suspensiones" id="wheel_speed.menu_type_suspension_list" parent="wheel_speed.menu_auxiliar"
+              action="wheel_speed.action_type_suspension_window"/>
+
+
+  </data>
+</odoo>

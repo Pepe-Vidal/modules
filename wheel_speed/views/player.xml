@@ -1,0 +1,145 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="wheel_speed.player_tree">
+      <field name="name">WheelSpeed player</field>
+      <field name="model">wheel_speed.player</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="wheel_speed.player_form" model="ir.ui.view">
+        <field name="name">WheelSpeed player</field>
+        <field name="model">wheel_speed.player</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+
+                    <group>
+
+                        <group>
+                            <field name="name"/>
+                            <field name="passwd"/>
+
+                            <separator />
+                            <field name="money"/>
+                            <separator />
+                            <separator />
+
+                            <h4>Garaje</h4>
+
+                            <field name="garaje_level"/>
+                            <button name="update_garaje" type="object" class="oe_stat_button">
+                                <div class="o_form_field o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="required_money_garaje" string="Money"/>
+                                    </span>
+                                    <span class="o_stat_text">Update Garaje</span>
+                                </div>
+                            </button>
+
+                            
+
+                        </group>
+
+                        <group>
+                            <field name="avatar" widget="image"></field>
+                            
+                        </group>
+                        <notebook>
+                                <page string ="Coches">
+                                    <group>
+                                        <field name="cars" mode="kanban">
+                                            <kanban>
+                                                <field name = "id"/>
+                                                <field name="name"/>
+                                                <field name="player"/>
+                                                <field name="foto"/>
+    
+                                                <templates>
+                                                    <t t-name="kanban-box">
+                                                    <div t-attf-class="oe_kanban_card o_kanban_record_has_image_fill ">
+                                                        <div class="o_kanban_image_fill_left o_kanban_image_full d-none d-md-block"
+                                                            t-attf-style="background-image:url('#{kanban_image('wheel_speed.car', 'foto', record.id.value, placeholder)}')">
+                                                        </div>
+
+                                                        <div class="oe_kanban_details d-flex flex-column">
+                                                            <a type="open">
+                                                                <h4 class="o_kanban_record_title oe_partner_heading">
+                                                                    <field name="name"/>
+                                                                </h4>
+                                                            </a>
+                                                                                    
+                                                        </div>
+                                                     </div>
+                                                    </t>
+                                                </templates>
+                                            </kanban>
+                                        </field>
+                                    </group>
+                                </page>
+
+                                <page string ="Mecado">
+                                    <group>
+                                        <field name="available_cars" string="" mode="kanban">
+                                            <kanban>
+                                                <field name = "id"/>
+                                                <field name="name"/>
+                                                <field name="foto"/>
+    
+                                                <templates>
+                                                    <t t-name="kanban-box">
+                                                    <div t-attf-class="oe_kanban_card o_kanban_record_has_image_fill ">
+                                                        <div class="o_kanban_image_fill_left o_kanban_image_full d-none d-md-block"
+                                                            t-attf-style="background-image:url('#{kanban_image('wheel_speed.car_type', 'foto', record.id.value, placeholder)}')">
+                                                        </div>
+
+                                                        <div class="oe_kanban_details d-flex flex-column">
+                                                            <a type="open">
+                                                                <h4 class="o_kanban_record_title oe_partner_heading">
+                                                                    <field name="name"/>
+                                                                </h4>
+                                                            </a>
+                                                                                    
+                                                        </div>
+                                                        <div class="oe_kanban_details d-flex flex-column">
+                                                            <button name="comprar"
+                                                                    type="object"
+                                                                    string="Comprar"
+                                                                    class="btn btn-primary"
+                                                                    context="{'ctx_car_type':parent.id}"
+                                                            >Comprar</button>
+                                                        </div>
+                                                     </div>
+                                                    </t>
+                                                </templates>
+                                            </kanban>
+                                        </field>
+                                    </group>
+                                </page>
+                        </notebook>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </data>
+</odoo>

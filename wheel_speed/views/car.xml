@@ -1,0 +1,115 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="wheel_speed.car_tree">
+      <field name="name">WheelSpeed car</field>
+      <field name="model">wheel_speed.car</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+		      <field name="player"/>
+          <field name="price_car"/>
+          <field name="motor" />
+          <field name="max_vel" />
+        </tree>
+      </field>
+    </record>
+
+    <record id="wheel_speed.car_form" model="ir.ui.view">
+        <field name="name">WheelSpeed car</field>
+        <field name="model">wheel_speed.car</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+
+                        <group>
+                            <field name="name"/>
+					                  <field name="player"/>
+                            <field name="marca"/>
+                            <field name="modelo"/>
+                            
+                            <field name="price_car"/>
+
+                            <separator/>
+
+                            <field name="max_vel"/>
+                            <field name="cv"/>
+                            <field name="aceleracion"/>
+                            <field name="coef_aer"/>
+                            <field name="freno"/>
+                            <field name="weight"/>
+                            <field name="weight_total"/>
+
+                        </group>
+
+                        <group>
+                            <field name="foto" widget="image"></field>
+                            
+                            <separator/>
+                            <separator/>
+
+                            <field name="motor"/>
+                            <field name="chasis"/>
+                            <field name="suspension"/>
+                            <field name="frenos"/>
+                            <field name="ruedas"/>
+                            <field name="type"/>
+                        </group>
+                      
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="wheel_speed.car_kanban" model="ir.ui.view">
+      <field name="name">WheelSpeed car</field>
+      <field name="model">wheel_speed.car</field>
+      <field name="arch" type="xml">
+        <kanban>
+          <field name="name" />
+		<field name="player" />
+          <field name="id" />
+          <field name="foto" />
+          <field name="motor" />
+          <field name="max_vel" />
+          <field name="ruedas" />
+          <field name="frenos" />
+          <field name="chasis" />
+          <field name="suspension" />
+          <field name="price_car" />
+          <templates>
+            <t t-name="kanban-box">
+              
+            <div class="oe_kanban_card o_kanban_record_has_image_fill">
+
+
+              <div class="o_kanban_image_fill_left d-none d-md-block"> 
+              <a type="open">
+                <img class="oe_kanban_image"
+                t-att-alt="record.name.value"
+                t-att-src="kanban_image('wheel_speed.car', 'foto', record.id.value, placeholder)" />
+              </a>
+              </div>
+              
+                                <div class="oe_kanban_details d-flex flex-column">
+                                <strong class="o_kanban_record_title oe_partner_heading"><field name="name"/></strong>
+                                    <ul> 
+							                      <li><field name="player" /> </li>
+                                    <li><field name="price_car" /> $ </li>
+                                    <li><field name="motor" /> </li>
+                                    <li><field name="max_vel" /> km/h </li>
+
+                                    </ul>
+                                </div>
+
+            </div>
+            </t>
+          </templates>
+        </kanban>
+      </field>
+    </record>
+
+  </data>
+</odoo>
