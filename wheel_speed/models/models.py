@@ -24,16 +24,37 @@ class player(models.Model):
     
     required_money_garaje = fields.Float(compute='_get_required_money_garaje')
     garaje_level = fields.Integer(default=1)
+    garaje_money_production = fields.Float(compute='_get_money_production')
+    
+    @api.depends('cars')
+    def _get_money_production(self):
+        for p in self:
+            p.garaje_money_production = sum(p.cars.mapped('price_car')) * ( p.garaje_level * 0.001 )
+            
+            
+    @api.model
+    def produce(self):  # ORM CRON
+        self.search([]).produce_money()
+        
+                
+    def produce_money(self): 
+        for p in self:
+            print("hhhhhhhhhhhffffffffdhhhhhh")
+            money = p.money + p.garaje_money_production
+            print(money)
+            p.write({
+                    "money": money,
+                }) 
+
+            
     
     def _get_required_money_garaje(self):
         for p in self:
             p.required_money_garaje = (p.garaje_level ** 1.274) * 964
 
-            
-    
     def update_garaje(self):  # ORM
         for p in self:
-            required_money = p.required_money_garaje  # Smartbutton
+            required_money = p.required_money_garaje  
             available_money = p.money
             if (required_money <= available_money):
                 p.garaje_level += 1
@@ -50,9 +71,7 @@ class tramos(models.Model):
     name = fields.Char()
     distancia = fields.Float()
     grados = fields.Float()
-    
-    
-    
+
     
 class race(models.Model):
     _name = 'wheel_speed.race'
@@ -61,6 +80,10 @@ class race(models.Model):
     name = fields.Char()
     date_start = fields.Datetime(readonly=True, default=fields.Datetime.now)
     date_end = fields.Datetime(compute='_get_time')
+    premio = fields.Float()
+    precio = fields.Float()
+    
+    vueltas = fields.Integer()
     
     player1 = fields.Many2one('wheel_speed.player')
     player2 = fields.Many2one('wheel_speed.player')
@@ -69,11 +92,22 @@ class race(models.Model):
     
     tramos = fields.Many2many('wheel_speed.tramos')
 
-    distancia = fields.Float()
+
+
     time1 = fields.Float()
     time2 = fields.Float()
     winner = fields.Char()
     
+    @api.onchange('precio')
+    def onchange_precio(self):
+        for c in self.env['wheel_speed.player'].filtered(lambda r: r.money <= self.precio):
+            print(c.name)
+            return {
+                'domain': {
+                    'player1': [('id', '!=', c.id)],
+                    'player2': [('id', '!=', c.id)],
+                }
+            }
     
     @api.onchange('player1')
     def onchange_player1(self):
@@ -107,6 +141,8 @@ class race(models.Model):
         car1 = c.car1
         car2 = c.car2
         
+        numero_vueltas = c.vueltas
+        
         vel_ini_car1 = 0
         vel_ini_car2 = 0
         
@@ -115,72 +151,91 @@ class race(models.Model):
         
         tramos_carera = c.tramos
         
-        for t in tramos_carera:
-            
-            if t.grados == 0:
-
-                if (vel_ini_car1 == 0 ):
-                    time_vel_max_car1 = ((car1.max_vel * car1.aceleracion)/100) * (car1.max_vel/100)
-                else:
-                    time_vel_max_car1 = ((car1.max_vel * car1.aceleracion)/100) * (car1.max_vel/100) - ((vel_ini_car1 * car1.aceleracion)/100) * (car1.max_vel/100)
-
-                distancia_vel_max_car1 = ((car1.max_vel/2) * (5/18)) * time_vel_max_car1
-
-                if (distancia_vel_max_car1 < c.distancia ):
-                    time_car1 += ((t.distancia - distancia_vel_max_car1)/(car1.max_vel * (5/18)) ) + time_vel_max_car1
-                else:
-                    time_car1 += (t.distancia * time_vel_max_car1) / distancia_vel_max_car1
+        for i in range(numero_vueltas):
+            for t in tramos_carera:
                 
-                
-                if (vel_ini_car2 == 0 ):
-                    time_vel_max_car2 = ((car2.max_vel * car2.aceleracion)/100) * (car2.max_vel/100)
+                if t.grados == 0:
+
+                    if (vel_ini_car1 == 0 ):
+                        time_vel_max_car1 = ((car1.max_vel * car1.aceleracion)/100) * (car1.max_vel/100)
+                    else:
+                        time_vel_max_car1 = ((car1.max_vel * car1.aceleracion)/100) * (car1.max_vel/100) - ((vel_ini_car1 * car1.aceleracion)/100) * (car1.max_vel/100)
+
+                    distancia_vel_max_car1 = ((car1.max_vel/2) * (5/18)) * time_vel_max_car1
+
+                    if (distancia_vel_max_car1 < t.distancia ):
+                        time_car1 += ((t.distancia - distancia_vel_max_car1)/(car1.max_vel * (5/18)) ) + time_vel_max_car1
+                    else:
+                        time_car1 += (t.distancia * time_vel_max_car1) / distancia_vel_max_car1
+                    
+                    
+                    if (vel_ini_car2 == 0 ):
+                        time_vel_max_car2 = ((car2.max_vel * car2.aceleracion)/100) * (car2.max_vel/100)
+                    else:
+                        time_vel_max_car2 = ((car2.max_vel * car2.aceleracion)/100) * (car2.max_vel/100)- ((vel_ini_car2 * car2.aceleracion)/100) * (car2.max_vel/100)
+                    
+                    distancia_vel_max_car2 = ((car2.max_vel/2) * (5/18)) * time_vel_max_car2
+                    
+                    if (distancia_vel_max_car2 < t.distancia ):
+                        time_car2 += ((t.distancia - distancia_vel_max_car2)/(car2.max_vel * (5/18))) + time_vel_max_car2
+                    else:
+                        time_car2 += (t.distancia * time_vel_max_car2) / distancia_vel_max_car2
+                    
                 else:
-                    time_vel_max_car2 = ((car2.max_vel * car2.aceleracion)/100) * (car2.max_vel/100)- ((vel_ini_car2 * car2.aceleracion)/100) * (car2.max_vel/100)
-                  
-                distancia_vel_max_car2 = ((car2.max_vel/2) * (5/18)) * time_vel_max_car2
-                
-                if (distancia_vel_max_car2 < c.distancia ):
-                    time_car2 += ((t.distancia - distancia_vel_max_car2)/(car2.max_vel * (5/18))) + time_vel_max_car2
-                else:
-                    time_car2 += (t.distancia * time_vel_max_car2) / distancia_vel_max_car2
-                 
-            else:
 
-                #CALCULAR TIEMPO COCHE 1 CURVA
-                velocidad_max_curva = t.distancia / ((t.grados * 100 / 360) /10)
+                    #CALCULAR TIEMPO COCHE 1 CURVA
+                    velocidad_max_curva = t.distancia / ((t.grados * 100 / 360) /10)
 
-                velocidad_curva_car1 = velocidad_max_curva + car1.agarre - (car1.coef_aer*150)
+                    velocidad_curva_car1 = velocidad_max_curva + car1.agarre - (car1.coef_aer*150)
 
-                if velocidad_curva_car1 > car1.max_vel:
-                    velocidad_curva_car1 = car1.max_vel * (car1.freno /100)
-                else:
-                    velocidad_curva_car1 = velocidad_curva_car1 * (car1.freno /100)
+                    if velocidad_curva_car1 > car1.max_vel:
+                        velocidad_curva_car1 = car1.max_vel * (car1.freno /100)
+                    else:
+                        velocidad_curva_car1 = velocidad_curva_car1 * (car1.freno /100)
 
-                
-                vel_ini_car1 = velocidad_curva_car1
-                time_car1 += (t.distancia/(velocidad_curva_car1 * (5/18)))
-                
-                #CALCULAR TIEMPO COCHE 1 CURVA
-                velocidad_curva_car2 = velocidad_max_curva + car2.agarre -(car2.coef_aer*150)
+                    
+                    vel_ini_car1 = velocidad_curva_car1
+                    time_car1 += (t.distancia/(velocidad_curva_car1 * (5/18)))
+                    
+                    #CALCULAR TIEMPO COCHE 1 CURVA
+                    velocidad_curva_car2 = velocidad_max_curva + car2.agarre -(car2.coef_aer*150)
 
-                if velocidad_curva_car2 > car2.max_vel:
-                    velocidad_curva_car2 = car2.max_vel * (car2.freno /100)
-                else:
-                    velocidad_curva_car2 = velocidad_curva_car2 * (car2.freno /100)
+                    if velocidad_curva_car2 > car2.max_vel:
+                        velocidad_curva_car2 = car2.max_vel * (car2.freno /100)
+                    else:
+                        velocidad_curva_car2 = velocidad_curva_car2 * (car2.freno /100)
 
-                vel_ini_car2 = velocidad_curva_car2
-                time_car2 += (t.distancia/(velocidad_curva_car2 * (5/18)))
-             
+                    vel_ini_car2 = velocidad_curva_car2
+                    time_car2 += (t.distancia/(velocidad_curva_car2 * (5/18)))
+        
         c.time1 = time_car1
         c.time2 = time_car2
+        
+        if (time_car2 >= 60 and time_car1 >= 60 ):
+            c.time1 = (time_car1 - (time_car1 % 60)) / 60 + ((time_car1 % 60) / 100) 
+            c.time2 = (time_car2 - (time_car2 % 60)) / 60 + ((time_car2 % 60) / 100) 
+        
         if (time_car2 > time_car1 ):
-            c.winner = "car1"
+            c.winner = "palyer1"
+            money_p1 = c.player1.money - c.precio + c.premio
+            money_p2 = c.player2.money - c.precio
+            c.player1.write({
+                    "money": money_p1,
+                })
+            c.player2.write({
+                    "money": money_p2,
+                })
         else:
-            c.winner = "car2"
+            c.winner = "player2"
+            money_p2 = c.player2.money - c.precio + c.premio
+            money_p1 = c.player1.money - c.precio
+            c.player1.write({
+                    "money": money_p1,
+                })
+            c.player2.write({
+                    "money": money_p2,
+                })
                           
-                
-                
-    
 
 class car(models.Model):
     _name = 'wheel_speed.car'
@@ -304,17 +359,23 @@ class car_type(models.Model):
         qty_cars = len(player.cars)
         required_money = c.price_car  # Smartbutton
         available_money = player.money
-        if (required_money <= available_money and player.garaje_level > qty_cars ):
-            player.money = player.money - required_money      
-            self.env['wheel_speed.car'].create({
-                "player": player.id,
-                "type": c.id,
-                "motor": c.motor.id,
-                "ruedas": c.ruedas.id,
-                "frenos": c.frenos.id,
-                "chasis": c.chasis.id,
-                "suspension": c.suspension.id
-            })
+        
+        if (required_money <= available_money):
+            if (player.garaje_level > qty_cars ):
+                player.money = player.money - required_money      
+                self.env['wheel_speed.car'].create({
+                    "player": player.id,
+                    "type": c.id,
+                    "motor": c.motor.id,
+                    "ruedas": c.ruedas.id,
+                    "frenos": c.frenos.id,
+                    "chasis": c.chasis.id,
+                    "suspension": c.suspension.id
+                })
+            else:
+                raise ValidationError("Garaje lleno.Debes subir de nivel el garaje para tener mas capacidad.")
+        else:
+            raise ValidationError("No tienes Suficiente dinero")
    
     
 class engine(models.Model):
@@ -441,7 +502,4 @@ class suspension_type(models.Model):
     peso = fields.Float()
     durabilidad = fields.Float(default = 100,readonly=True)
     velocidad = fields.Float()
-
-
-
 

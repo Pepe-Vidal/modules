@@ -1,64 +1,107 @@
 <odoo>
   <data>
-
-      <record id="wheel_speed.race_form" model="ir.ui.view">
-        <field name="name">WheelSpeed race</field>
-        <field name="model">wheel_speed.race</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <group>
-
-                        <group>
-                            <field name="name"/>
-                            <field name="date_start"/>  
-                            <field name="date_end"/>
-                            
-                            <separator/>
-                            <field name="tramos"/>  
-                            <separator/>
-
-                            <field name="player1"/>
-                            <field name="player2"/>
-                            <field name="car1"/>  
-                            <field name="car2"/>  
-
-                            <field name="distancia"/>  
-                            <field name="time1"/>  
-                            <field name="time2"/>  
-                            <field name="winner"/>    
-
-                            <button name="simulate_race"
-                                type="object"
-                                string="carrera"
-                                class="btn btn-primary"> carrea
-                            </button>
-                            <button name="simulate_race" type="object" class="oe_stat_button">
-                                Carrera
-                            </button>
-
-                        </group>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-  <record model="ir.ui.view" id="wheel_speed.race_calendar">
-      <field name="name">Races Calendar</field>
+    <record model="ir.ui.view" id="wheel_speed.race_tree">
+      <field name="name">WheelSpeed race</field>
       <field name="model">wheel_speed.race</field>
       <field name="arch" type="xml">
-        <calendar string="Races Calendar"
-                  date_start="date_start"
-                  date_stop="date_end"
-                  color = "player1"
-        >
+        <tree decoration-info="date_start==current_date">
           <field name="name"/>
-          <field name="player1"/>
-          <field name="player2"/>
-        </calendar>
+          <field name="date_start"/>
+          <field name="date_end"/>
+        </tree>
       </field>
     </record>
+
+    <record id="wheel_speed.race_form" model="ir.ui.view">
+      <field name="name">WheelSpeed race</field>
+      <field name="model">wheel_speed.race</field>
+      <field name="arch" type="xml">
+        <form>
+            <sheet>
+              <group>
+                <group>
+                  <field name="name"></field>
+                  <field name="precio" widget="float"></field>
+                  <field name="player1" ></field>
+                  <field name="car1"></field>
+                  <field name="date_start" widget="datetime"></field>
+                  <field name="date_end" widget="datetime"></field>
+                  <button name="simulate_race" type="object" string="carrera" class="btn btn-primary"></button>
+                </group>
+                <group>
+                  <separator />
+                  <field name="premio" widget="float"></field>
+                  <field name="player2" ></field>
+                  <field name="car2" ></field>
+                </group>
+              </group>
+              <notebook>
+                <page string ="Información">
+                  <group>
+                    <group>
+                      <field name="vueltas" ></field>
+                    </group>
+                    <group>
+                      <field name="tramos"></field>
+                    </group>
+                  </group>
+                </page>
+                <page string ="Resultados">
+                  <group>
+                    <group>
+                      <field string = "Tiempo Coche 1" name="time1" widget="float_time" ></field>
+                      <field string = "Tiempo Coche 2" name="time2" widget="float_time" ></field>
+                    </group>
+                    <group>
+                      <field string = "Ganador:" name="winner" ></field>
+                    </group>
+                  </group>
+                </page>
+              </notebook>
+            </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="wheel_speed.race_calendar">
+            <field name="name">Races Calendar</field>
+            <field name="model">wheel_speed.race</field>
+            <field name="arch" type="xml">
+              <calendar string="Races Calendar"
+                        date_start="date_start"
+                        date_stop="date_end"
+                        color = "player1"
+              >
+                <field name="name"/>
+                <field name="player1"/>
+                <field name="player2"/>
+              </calendar>
+            </field>
+    </record>
+
+    <record model="ir.ui.view" id="wheel_speed.race_search">
+      <field name="name">Races race</field>
+      <field name="model">wheel_speed.race</field>
+      <field name="arch" type="xml">
+        <search >
+          <field name="name"/>
+          <field name="date_start"/>
+          <field name="date_end"/>
+          <field name="player1"/>
+          <field name="player2"/>
+          <field name="car1"/>
+          <field name="car2"/>
+
+
+          <filter name="group_by_player1" string="Group by Player1" context="{'group_by': 'player1'}"/>
+          <filter name="group_by_player2" string="Group by Player2" context="{'group_by': 'player2'}"/>
+          
+          <filter name="hoy" string="Hoy" domain="[('date_start', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
+                                             ('date_start', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))]"/>
+        </search>
+      </field>
+    </record>
+
 
 
   </data>

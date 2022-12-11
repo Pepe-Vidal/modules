@@ -114,5 +114,36 @@
       </field>
     </record>
 
+
+    <record model="ir.ui.view" id="wheel_speed.car_type_search">
+        <field name="name">car_type search</field>
+        <field name="model">wheel_speed.car_type</field>
+        <field name="arch" type="xml">
+          <search >
+            <field name="name"/>
+            <field name="motor"/>
+            <field name="marca"/>
+            <field name="modelo"/>
+            <field name="max_vel"/>
+            <field name="weight_total"/>
+            <field name="coef_aer"/>
+            <field name="aceleracion"/>
+            <field name="agarre"/>
+            <field name="freno"/>
+            <field name="price_car"/>
+
+
+            <filter name="group_by_marca" string="Group by motor" context="{'group_by': 'motor'}"/>
+            <filter name="group_by_marca" string="Group by marca" context="{'group_by': 'marca'}"/>
+            <filter name="group_by_modelo" string="Group by modelo" context="{'group_by': 'modelo'}"/>
+            
+            <filter name="price_more_100000" string="More than 100.000 €" domain="[('price_car','>',100000)]"/>
+            <filter name="price_more_1000000" string="More than 1.000.000 €" domain="[('price_car','>',1000000)]"/>
+            <filter name="price_more_10000000" string="More than 10.000.000 €" domain="[('price_car','>',10000000)]"/> 
+
+          </search>
+        </field>
+      </record>
+
   </data>
 </odoo>

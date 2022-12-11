@@ -41,6 +41,7 @@
         'views/player.xml',
         'views/views.xml',
         'views/templates.xml',
+        'views/cron.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
