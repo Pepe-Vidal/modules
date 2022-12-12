@@ -5366,6 +5366,21 @@ iwh+nJB7/wCf5VJKuUHAHIY57Ht+n9KAJLiZlUKrDb09cdaKgm3SrjC+mCc/5/xooA//2Q==
 </field>
           </record>
 
+          <record id="wheel_speed.engine_v12_65" model="wheel_speed.engine">
+            <field name="type" ref="wheel_speed.engine_type_v12_65"></field>
+          </record>
+
+          <record id="wheel_speed.engine_3cv" model="wheel_speed.engine">
+            <field name="type" ref="wheel_speed.engine_type_3cv"></field>
+          </record>
+
+          <record id="wheel_speed.engine_l4_2" model="wheel_speed.engine">
+            <field name="type" ref="wheel_speed.engine_type_l4_2"></field>
+          </record>
+
+
+
+
           <record id="wheel_speed.wheel_type_default" model="wheel_speed.wheel_type">
             <field name="name">Default</field>
             <field name="peso">30</field>
