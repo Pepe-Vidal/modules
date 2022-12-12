@@ -98,16 +98,6 @@ class race(models.Model):
     time2 = fields.Float()
     winner = fields.Char()
     
-    @api.onchange('precio')
-    def onchange_precio(self):
-        for c in self.env['wheel_speed.player'].filtered(lambda r: r.money <= self.precio):
-            print(c.name)
-            return {
-                'domain': {
-                    'player1': [('id', '!=', c.id)],
-                    'player2': [('id', '!=', c.id)],
-                }
-            }
     
     @api.onchange('player1')
     def onchange_player1(self):

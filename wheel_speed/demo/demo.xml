@@ -5366,6 +5366,51 @@ iwh+nJB7/wCf5VJKuUHAHIY57Ht+n9KAJLiZlUKrDb09cdaKgm3SrjC+mCc/5/xooA//2Q==
 </field>
           </record>
 
+          <record id="wheel_speed.wheel_type_default" model="wheel_speed.wheel_type">
+            <field name="name">Default</field>
+            <field name="peso">30</field>
+            <field name="durabilidad">100</field>
+            <field name="velocidad">0</field>
+            <field name="diametro">20</field>
+            <field name="agarre">100</field>
+          </record>
+
+          <record id="wheel_speed.wheel_default" model="wheel_speed.wheel">
+            <field name="type" ref="wheel_speed.wheel_type_default"></field>
+          </record>
+
+          <record id="wheel_speed.chassis_type_default" model="wheel_speed.chassis_type">
+            <field name="name">Default</field>
+            <field name="peso">500</field>
+            <field name="durabilidad">100</field>
+          </record>
+
+          <record id="wheel_speed.chassis_default" model="wheel_speed.chassis">
+            <field name="type" ref="wheel_speed.chassis_type_default"></field>
+          </record>
+
+          <record id="wheel_speed.suspension_type_default" model="wheel_speed.suspension_type">
+            <field name="name">Default</field>
+            <field name="peso">30</field>
+            <field name="durabilidad">100</field>
+            <field name="velocidad">0</field>
+          </record>
+
+          <record id="wheel_speed.suspension_default" model="wheel_speed.suspension">
+            <field name="type" ref="wheel_speed.suspension_type_default"></field>
+          </record>
+
+          <record id="wheel_speed.brake_type_default" model="wheel_speed.brake_type">
+            <field name="name">Default</field>
+            <field name="peso">30</field>
+            <field name="durabilidad">100</field>
+            <field name="fuerza">70</field>
+          </record>
+
+          <record id="wheel_speed.brake_default" model="wheel_speed.brake">
+            <field name="type" ref="wheel_speed.brake_type_default"></field>
+          </record>
+
 <!--
 
           <record id="object1" model="wheel_speed.wheel_speed">
