@@ -19,8 +19,14 @@
 
     <record model="ir.actions.act_window" id="wheel_speed.action_player_window">
       <field name="name">WheelSpeed Player</field>
-      <field name="res_model">wheel_speed.player</field>
+      <field name="res_model">res.partner</field>
       <field name="view_mode">tree,form</field>
+      <field name="domain"></field>
+      <field name="search_view_id" ref="wheel_speed.player_search"></field>
+      <field name="context">{'default_is_player': True, 'search_default_player_partner': 1}</field>
+      <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('wheel_speed.player_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('wheel_speed.player_form')}),]" />
     </record>
 
     <record model="ir.actions.act_window" id="wheel_speed.action_car_window">

@@ -8,13 +8,15 @@ from datetime import datetime, timedelta
 import math
 
 class player(models.Model):
-    _name = 'wheel_speed.player'
+    _name = 'res.partner'
+    _inherit = 'res.partner'
     _description = 'Players'
 
-    name = fields.Char(required=True)
+    #name = fields.Char(required=True)
     passwd = fields.Char()
     avatar = fields.Image(max_width = 200 ,max_height = 200 )
     money = fields.Float()
+    is_player = fields.Boolean()
     
     cars = fields.One2many('wheel_speed.car','player')
     
@@ -39,7 +41,6 @@ class player(models.Model):
                 
     def produce_money(self): 
         for p in self:
-            print("hhhhhhhhhhhffffffffdhhhhhh")
             money = p.money + p.garaje_money_production
             print(money)
             p.write({
@@ -85,8 +86,8 @@ class race(models.Model):
     
     vueltas = fields.Integer()
     
-    player1 = fields.Many2one('wheel_speed.player')
-    player2 = fields.Many2one('wheel_speed.player')
+    player1 = fields.Many2one('res.partner',domain="[('is_player','=',True)]")
+    player2 = fields.Many2one('res.partner',domain="[('is_player','=',True)]")
     car1 = fields.Many2one('wheel_speed.car')
     car2 = fields.Many2one('wheel_speed.car')
     
@@ -104,7 +105,7 @@ class race(models.Model):
         return {
             'domain': {
                 'car1': [('id', 'in', self.player1.cars.ids)],
-                'player2': [('id', '!=', self.player1.id)],
+                'player2': [('id', '!=', self.player1.id),('is_player','=',True)],
             }
         }
 
@@ -113,7 +114,7 @@ class race(models.Model):
         return {
             'domain': {
                 'car2': [('id', 'in', self.player2.cars.ids)],
-                'player1': [('id', '!=', self.player2.id)],
+                'player1': [('id', '!=', self.player2.id),('is_player','=',True)],
             }
         }
         
@@ -231,7 +232,7 @@ class car(models.Model):
     _name = 'wheel_speed.car'
     _description = 'Cars'
     
-    player = fields.Many2one('wheel_speed.player')
+    player = fields.Many2one('res.partner', domain="[('is_player','=',True)]" )
     type = fields.Many2one('wheel_speed.car_type', ondelete="restrict",required=True)
 
     name = fields.Char(related='type.name')
@@ -345,7 +346,7 @@ class car_type(models.Model):
 
     def comprar(self):          
       for c in self:
-        player = self.env['wheel_speed.player'].browse(self.env.context['ctx_car_type'])
+        player = self.env['res.partner'].browse(self.env.context['ctx_car_type'])
         qty_cars = len(player.cars)
         required_money = c.price_car  # Smartbutton
         available_money = player.money
@@ -492,4 +493,15 @@ class suspension_type(models.Model):
     peso = fields.Float()
     durabilidad = fields.Float(default = 100,readonly=True)
     velocidad = fields.Float()
+
+
+class modificar_car_wizard(models.TransientModel):
+    _name = 'wheel_speed.modificar_car_wizard'
+    _description = 'Wizard per modificar el coche'
+    
+    def _default_car(self):
+        return self.env['wheel_speed.car'].browse(self._context.get('active_id'))
+    
+    name = fields.Many2one('wheel_speed.car',default=_default_car,required=True,readonly=True)
+    foto = fields.Image(related='name.foto')
 

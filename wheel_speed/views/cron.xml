@@ -1,8 +1,8 @@
 <odoo>
     <data>
-           <record model="ir.cron" forcecreate="True" id="wheel_speed.cron_money_produce">
+        <record model="ir.cron" forcecreate="True" id="wheel_speed.cron_money_produce">
             <field name="name">Game: Cron Money Produce</field>
-            <field name="model_id" ref="model_wheel_speed_player"/>
+            <field name="model_id" ref="model_res_partner"/>
             <field name="state">code</field>
             <field name="code">model.produce()</field>
             <field name="user_id" ref="base.user_root"/>
