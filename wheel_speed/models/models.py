@@ -504,4 +504,46 @@ class modificar_car_wizard(models.TransientModel):
     
     name = fields.Many2one('wheel_speed.car',default=_default_car,required=True,readonly=True)
     foto = fields.Image(related='name.foto')
+    motor = fields.Many2one('wheel_speed.engine')
+    ruedas = fields.Many2one('wheel_speed.wheel')
+    frenos = fields.Many2one('wheel_speed.brake')
+    chasis = fields.Many2one('wheel_speed.chassis')
+    suspension = fields.Many2one('wheel_speed.suspension')
+    
+    @api.onchange('name')
+    def _onchange_piezas(self):
+        self.motor = self.name.motor
+        self.ruedas = self.name.ruedas
+        self.frenos = self.name.frenos
+        self.chasis = self.name.chasis
+        self.suspension = self.name.suspension
+        
+        
+    def modificar_car(self):
+        self.ensure_one()
+        
+        player_money = self.name.player.money
+        coste_modificacion = self.name.price_car / 10
+        
+        if player_money >= coste_modificacion : 
+            
+            self.name.write({'motor': self.motor,
+                         'ruedas': self.ruedas,
+                         'frenos': self.frenos,
+                         'suspension': self.suspension,
+                         'chasis': self.chasis
+                         })
+        else:
+            return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'message': 'No tienes suficiente dinero',
+                        'type': 'danger',  # types: success,warning,danger,info
+                        'sticky': False,
+                    }
+            }
+        
+        
+
 

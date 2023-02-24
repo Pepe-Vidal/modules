@@ -157,13 +157,26 @@
                 <sheet>
                     <group>
                         <group>
+                            
                             <field name="name"/>
+                            <field name="motor"/>
+                            <field name="ruedas"/>
+                            <field name="frenos"/>
+                            <field name="chasis"/>
+                            <field name="suspension"/>
                         </group>
                         <group>
                             <field name="foto" widget="image"></field>
                         </group>
+                        
+                        <h>El coste de la modificacion es un 10% del valor del coche</h5>
                     </group>
                 </sheet>
+                <footer>
+                        <button name="modificar_car" type="object"
+                                string="Modificar" class="oe_highlight"/>
+                        <button special="cancel" string="Cancel"/>
+                  </footer>
             </form>
         </field>
     </record>
