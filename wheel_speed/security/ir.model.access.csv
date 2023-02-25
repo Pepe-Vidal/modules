@@ -13,4 +13,5 @@ access_wheel_speed_suspension,wheel_speed.suspension,model_wheel_speed_suspensio
 access_wheel_speed_suspension_type,wheel_speed.suspension_type,model_wheel_speed_suspension_type,base.group_user,1,1,1,1
 access_wheel_speed_race,wheel_speed.race,model_wheel_speed_race,base.group_user,1,1,1,1
 access_wheel_speed_tramos,wheel_speed.tramos,model_wheel_speed_tramos,base.group_user,1,1,1,1
+access_wheel_speed_crear_race_wizard,wheel_speed.crear_race_wizard,model_wheel_speed_crear_race_wizard,base.group_user,1,1,1,1
 access_wheel_speed_modificar_car_wizard,wheel_speed.modificar_car_wizard,model_wheel_speed_modificar_car_wizard,base.group_user,1,1,1,1

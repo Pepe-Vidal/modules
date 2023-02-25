@@ -169,7 +169,7 @@
                             <field name="foto" widget="image"></field>
                         </group>
                         
-                        <h>El coste de la modificacion es un 10% del valor del coche</h5>
+                        <h5>El coste de la modificacion es un 10% del valor del coche</h5>
                     </group>
                 </sheet>
                 <footer>

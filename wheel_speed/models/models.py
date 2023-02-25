@@ -497,7 +497,7 @@ class suspension_type(models.Model):
 
 class modificar_car_wizard(models.TransientModel):
     _name = 'wheel_speed.modificar_car_wizard'
-    _description = 'Wizard per modificar el coche'
+    _description = 'Wizard para modificar el coche'
     
     def _default_car(self):
         return self.env['wheel_speed.car'].browse(self._context.get('active_id'))
@@ -543,7 +543,124 @@ class modificar_car_wizard(models.TransientModel):
                         'sticky': False,
                     }
             }
+                    
+class crear_race_wizard(models.TransientModel):
+    _name = 'wheel_speed.crear_race_wizard'
+    _description = 'Wizard para crear una carrera'
+    
+    def _default_car(self):
+        return self.env['res.partner'].browse(self._context.get('active_id'))
+    
+    state = fields.Selection([('1', 'Player1'), ('2', 'Player2'), ('3', 'Configuracion')], default='1')
+    
+    player1 = fields.Many2one('res.partner',default=_default_car,required=True,readonly=True)
+    player2 = fields.Many2one('res.partner',domain="[('is_player','=',True)]")
+    
+    car1 = fields.Many2one('wheel_speed.car')
+    car2 = fields.Many2one('wheel_speed.car')
+    
+    date_start = fields.Datetime(readonly=True, default=fields.Datetime.now)
+    date_end = fields.Datetime(compute='_get_time')
+    premio = fields.Float(compute='set_precio_premio',readonly=True)
+    precio = fields.Float(compute='set_precio_premio',readonly=True)
+    
+    vueltas = fields.Integer()
+    
+    tramos = fields.Many2many('wheel_speed.tramos')
+
+    @api.onchange('player1')
+    def onchange_player1(self):
+        return {
+            'domain': {
+                'car1': [('id', 'in', self.player1.cars.ids)],
+                'player2': [('id', '!=', self.player1.id),('is_player','=',True)],
+            }
+        }
+
+    @api.onchange('player2')
+    def onchange_player2(self):
+        return {
+            'domain': {
+                'car2': [('id', 'in', self.player2.cars.ids)],
+                'player1': [('id', '!=', self.player2.id),('is_player','=',True)],
+            }
+        }
         
-        
+  
+    @api.depends('date_start')
+    def _get_time(self):
+        for r in self:
+            r.date_end = fields.Datetime.to_string(
+                    fields.Datetime.from_string(r.date_start) + timedelta(minutes=60))
+            
+    @api.depends('car2')
+    def set_precio_premio(self):
+        for r in self:
+            r.precio = (r.car2.price_car + r.car1.price_car)/10
+            r.premio = r.precio * 2 
 
 
+    def  previous(self):
+        if self.state == '2':
+            self.state = '1'
+        elif self.state == '3':
+            self.state = '2'
+        return {
+            'name': 'Carrera',
+            'type': 'ir.actions.act_window',
+            'res_model': 'wheel_speed.crear_race_wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'res_id': self.id
+        }
+
+    def next(self):
+        if self.state == '1':
+            self.state = '2'
+        elif self.state == '2':
+            self.state = '3'
+        return {
+            'name': 'Carrera',
+            'type': 'ir.actions.act_window',
+            'res_model': 'wheel_speed.crear_race_wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'res_id': self.id,
+            'context': dict(self._context, player1_context=self.player1.id),
+
+        }
+        
+    def crear_carrera(self):
+        carrera = self.env['wheel_speed.race'].create({
+            'name': self.player1.name,
+            'player1': self.player1.id,
+            'player2': self.player2.id,
+            'car1': self.car1.id,
+            'car2': self.car2.id,
+            'date_start': self.date_start,
+            'date_end': self.date_end,
+            'premio': self.premio,
+            'precio': self.precio,
+            'vueltas': self.vueltas
+        })
+
+        tramos = [] 
+        for t in self.tramos: 
+            tramos.append((0, 0, { 
+                'distancia': t.distancia,
+                'name': t.name, 
+                'grados': t.grados,  
+                
+            })) 
+        carrera.write({'tramos': tramos }) 
+        
+        return  {
+            'name': 'Carrera Creada',
+            'type': 'ir.actions.act_window',
+            'res_model': 'wheel_speed.race',
+            'view_mode': 'form',
+            'target': 'current',
+            'res_id': carrera.id,
+
+        }
+        

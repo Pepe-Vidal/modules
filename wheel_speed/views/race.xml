@@ -1,5 +1,65 @@
 <odoo>
   <data>
+
+    <record id="wheel_speed.crear_race_wizard_form" model="ir.ui.view">
+      <field name="name">WheelSpeed race wizard</field>
+      <field name="model">wheel_speed.crear_race_wizard</field>
+      <field name="arch" type="xml">
+        <form>
+            <header>
+              <button name="previous" type="object"
+                                string="Previous"
+                                states="2,3"/>
+              <button name="next" type="object"
+                                string="Next" states="1,2"
+                                class="oe_highlight"/>
+              <field name="state" widget="statusbar" />
+            </header>
+
+            <sheet>
+              <group>
+                <group states="1">
+
+                  <field name="player1" ></field>
+                  <field name="car1" ></field>
+
+                </group>
+
+                <group states="2">
+
+                  
+                  <field name="player2" ></field>
+                  <field name="car2" ></field>
+                  
+
+                  
+                </group>
+
+                <group states="3">
+
+                  <field name="date_start" widget="datetime"></field>
+                  <field name="date_end" widget="datetime"></field>
+                  <field name="premio" widget="float"></field>
+                  <field name="precio" widget="float"></field>
+                  <field name="vueltas" ></field>
+                  <field name="tramos" ></field>
+
+                  
+                </group>
+
+                
+              </group>
+            </sheet>
+            <footer >
+              <button states="3" name="crear_carrera" type="object"
+                                string="Crear" class="oe_highlight"/>
+              <button special="cancel" string="Cancelar"/>
+            </footer>
+        </form>
+      </field>
+    </record>
+
+
     <record model="ir.ui.view" id="wheel_speed.race_tree">
       <field name="name">WheelSpeed race</field>
       <field name="model">wheel_speed.race</field>
